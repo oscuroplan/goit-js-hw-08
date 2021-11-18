@@ -1,38 +1,24 @@
+// _____импортируем библиотеки:
+
+// - плеер
 import Player from '@vimeo/player';
+// - задержка
 import throttle from 'lodash.throttle';
 
-//инициализируем (достучаться до узла)
+// находим плеер
 const iframe = document.querySelector('#vimeo-player');
 
-//создаем экземпляр
-const iframePlayer = new Vimeo.Player(iframe);
+// создаем копию
+const player = new Player(iframe);
 
-// Обновляем в локальном хранилище текущую позицию
-const onPlay = function (data) {
-    localStorage.setItem("videoplayer-current-time", data.seconds)
-    // data is an object containing properties specific to that event
-};
+// записываем в локал текущее значение времени
+const onPlay = time => localStorage.setItem('videoplayer-current-time', time.seconds);
 
-// Получаем текущую из локального хранилища
-const currentTime = localStorage.getItem("videoplayer-current-time");
+// получает из локального хранилища текущую позицию
+const currentTimeOfVideo = localStorage.getItem('videoplayer-current-time');
 
-// устанавливаем на плеере сохраненную текущую позицию
-iframePlayer.setCurrentTime(currentTime).then(function(seconds) {
-    // seconds = фактическое время, которое искал player 
-}).catch(function(error) {
-    switch (error.name) {
-        case 'RangeError':
-            // время было меньше 0 или больше, чем продолжительность 
-            break;
+// если есть сохраненная текущая позиция и она отлична от 0, устанавливаем на плеере сохраненную текущую позицию
+currentTimeOfVideo ? player.setCurrentTime(currentTimeOfVideo) : null;
 
-        default:
-            //произошла другая ошибка
-            break;
-    }
-});
-
-// отслеживаем событие timeupdate
-//При запуске просмотра вызываем обработку и передаем текущие 
- // секунды в onPlay с интервалом в 1 секунду
-iframePlayer.on('timeupdate', throttle(onPlay, 1000));
-//data - это объект, содержащий свойства, специфичные для этого события 
+// при запуске просмотра вызываем обработку и передаем текущие секунды в onPlay с интервалом в 1 секунду
+player.on('timeupdate', throttle(onPlay, 1000));
