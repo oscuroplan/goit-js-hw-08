@@ -10,8 +10,10 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 console.log(galleryItems);
 
 const galleryContainer = document.querySelector('.gallery');
+// вызываем функцию создания
 const galleryItemMarkup = creategalleryItemMarkup(galleryItems);
 
+// добавляем на страницу
 galleryContainer.insertAdjacentHTML('beforeend', galleryItemMarkup);
 
 //создание макета разметки галереи
