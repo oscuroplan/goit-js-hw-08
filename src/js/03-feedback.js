@@ -8,11 +8,10 @@ const refs = {
   input: document.querySelector('.feedback-form  input'),
 };
 
-const formData = {};
+let formData = {};
 
 refs.form.addEventListener('submit', onFormSubmit);
-refs.textarea.addEventListener('input', throttle(onTextareaInput, 200));
-refs.input.addEventListener('input', throttle(onTextareaInput, 200));
+refs.form.addEventListener('input', throttle(onTextareaInput, 500));
 
 // вызываем функцию для проверки данных в хранилище при каждой перезагрузке
 populateTextarea();
@@ -20,6 +19,7 @@ populateTextarea();
 function onFormSubmit(evt) {
   //  Останавливаем поведение по умолчанию
   evt.preventDefault();
+
   //  Очищаем форму
   evt.currentTarget.reset();
   //  Убираем сообщение из хранилища
@@ -38,8 +38,10 @@ function populateTextarea() {
   // Получаем значение из хранилища
   const savedMessage = localStorage.getItem(STORAGE_KEY);
   const parsedMessage = JSON.parse(savedMessage);
+  formData = parsedMessage;
   // Если там что - то было, обновляем DOM
   if (savedMessage) {
-    (refs.input.value = parsedMessage.email), (refs.textarea.value = parsedMessage.message);
+    (refs.input.value = parsedMessage.email || ''),
+      (refs.textarea.value = parsedMessage.message || '');
   }
 }
